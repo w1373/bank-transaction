@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: transaction-service
+  cache:
+    type: simple
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.bank.transaction: DEBUG    

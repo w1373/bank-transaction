@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>交易管理平台</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <h2>交易管理平台</h2>
+    
+    <div th:if="${message}" class="flash-message success">
+        <p th:text="${message}"></p>
+    </div>
+    
+    <a href="/transactions/new">增加交易记录</a>
+    
+    <div style="margin: 15px 0; display: flex; gap: 10px;">
+        <form th:action="@{/transactions/list}" method="get">
+            <select name="type" style="padding: 6px;">
+                <option value="">全部类型</option>
+                <option th:each="type : ${transactionTypes}" 
+                        th:value="${type}"
+                        th:text="${type.description}"></option>
+            </select>
+            <button type="submit" style="margin-left: 5px;">筛选</button>
+        </form>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>交易账号</th>
+                <th>交易金额</th>
+                <th>交易类型</th>
+                <th>交易时间</th>
+                <th>交易描述</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.id}"></td>
+                <td th:text="${transaction.accountNumber}"></td>
+                <td th:text="${transaction.amount}"></td>
+                <td th:text="${transaction.type.description}"></td>
+                <td th:text="${#temporals.format(transaction.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${transaction.description}"></td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{/transactions/edit/{id}(id=${transaction.id})}">编辑</a>
+                        <a th:href="@{/transactions/delete/{id}(id=${transaction.id})}" 
+                           onclick="return confirm('确定要删除?')">删除</a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="margin: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <a th:href="@{/transactions/list(page=${currentPage - 1}, size=5, type=${type})}">上一页</a>
+            <a th:href="@{/transactions/list(page=${currentPage + 1}, size=5, type=${type})}">下一页</a>
+        </div>
+    </div>
+</body>
+</html>

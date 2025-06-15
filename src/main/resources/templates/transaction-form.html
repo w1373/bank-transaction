@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${actionType == 'create'}">创建交易</title>
+    <title th:if="${actionType == 'edit'}">编辑交易</title>
+    <style>
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2 th:if="${actionType == 'create'}">创建交易</h2>
+    <h2 th:if="${actionType == 'edit'}">编辑交易</h2>
+    
+    <form th:action="@{${actionType == 'create'} ? '/transactions/create' : '/transactions/edit'}" th:object="${transaction}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        
+        <div>
+            <label for="accountNumber">交易账号:</label>
+            <input type="text" id="accountNumber" th:field="*{accountNumber}" required />
+        </div>
+        
+        <div>
+            <label for="amount">交易金额:</label>
+            <input type="number" id="amount" th:field="*{amount}" step="0.01" required />
+        </div>
+        
+        <div>
+            <label for="type">交易类型:</label>
+            <select id="type" th:field="*{type}" required>
+                <option value="">选择交易类型</option>
+                <option th:each="type : ${transactionTypes}" 
+                        th:value="${type}" 
+                        th:text="${type.description}"></option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="description">交易描述:</label>
+            <textarea id="description" th:field="*{description}" rows="4"></textarea>
+        </div>
+        
+        <button type="submit">保存</button>
+    </form>
+    
+    <a href="/transactions">返回列表</a>
+</body>
+</html>
